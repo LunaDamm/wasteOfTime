@@ -11,7 +11,7 @@ const firebaseConfig = {
   projectId: "wasteoftimetracker",
   storageBucket: "wasteoftimetracker.firebasestorage.app",
   messagingSenderId: "392641310778",
-  appId: "1:392641310778:web:84345ec488979e94d48503"
+  appId: "1:392641310778:web:625c8de7f8bf10cbd48503"
 };
 
 // Initialize Firebase
