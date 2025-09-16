@@ -16,9 +16,13 @@
 
     <h4>Using that time differently, you could've:</h4>
     <ul>
-      <li>Traveled to New Sealand by plane and back about {{ (totalHours / 48).toFixed(0) }} times</li>
+      <li>Made {{ (totalHours / 0.1).toFixed(2) }} sandwiches and fed them to homeless people</li>
+      <li>Traveled to New Zealand by plane and back about {{ (totalHours / 40).toFixed(2) }} times</li>
       <li>Learned about {{ (totalHours / 600).toFixed(2) }} languages</li>
-      <li>You could've change your life for the better, but you didn't. Sucks to suck!</li>
+      <li>Worked for {{ totalHours }} hours and made at least {{ (totalHours * 150).toFixed(2) }} DKK</li>
+      <li>Called your mum about {{ (totalHours / 0.5).toFixed(2) }} times and told her you love her for once!</li>
+      <li>Read about {{ ((totalHours / 500000) * 100).toFixed(2) }}% of all English Wikipedia articles</li>
+      <li>You could've change your life for the better at least 1 time, but you didn't. Sucks to suck!</li>
     </ul>
   </div>
 </template>
