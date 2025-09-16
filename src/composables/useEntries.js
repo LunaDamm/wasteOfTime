@@ -6,6 +6,9 @@ export function useEntries() {
   const entries = ref([]);
 
   const newEntryTitle = ref("");
+  const newEntryStartTime = ref("");
+  const newEntryEndTime = ref("");
+
   console.log("Entry added:" + entries.value);
 
   onMounted(() => {
@@ -17,12 +20,16 @@ export function useEntries() {
   });
 
   const addEntry = async () => {
-    if (newEntryTitle.value.trim() == "") return;
+    if (newEntryTitle.value.trim() == "" || newEntryStartTime.value.trim() == "" || newEntryEndTime.value.trim() == "") return;
 
     await addDoc(entryFirebaseCollectionRef, {
       entryName: newEntryTitle.value,
+      entryStartTime: newEntryStartTime.value,
+      entryEndTime: newEntryEndTime.value
     });
     newEntryTitle.value = "";
+    newEntryStartTime.value = "";
+    newEntryEndTime.value = "";
   };
 
   const deleteEntry = async (id) => {
@@ -30,5 +37,5 @@ export function useEntries() {
     const entryDoc = doc(db, "entries", id);
     await deleteDoc(entryDoc);
   };
-  return { entries, newEntryTitle, addEntry, deleteEntry };
+  return { entries, newEntryTitle, newEntryStartTime, newEntryEndTime, addEntry, deleteEntry };
 }
