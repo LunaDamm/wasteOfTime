@@ -60,3 +60,4 @@ export function useEntries() {
   };
   return { entries, newEntryTitle, newEntryStartTime, newEntryEndTime, addEntry, deleteEntry };
 }
+
