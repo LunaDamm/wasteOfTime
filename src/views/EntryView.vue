@@ -8,7 +8,7 @@
     <button @click="addEntry">Add Entry</button>
     <ul>
       <li v-for="entry in entries" :key="entry.id">
-        {{ entry.entryName }} // {{ entry.entryStartTime }} // {{ entry.entryEndTime }} // {{ entry.id }}
+        {{ entry.entryName }} // {{ entry.entryStartTime }} // {{ entry.entryEndTime }} // Duration: {{ entry.durationMinutes }} // {{ entry.id }}
         <button @click="deleteEntry(entry.id)">Remove</button>
       </li>
     </ul>
