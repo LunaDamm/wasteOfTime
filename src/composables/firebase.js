@@ -21,3 +21,4 @@ const db = getFirestore(app);
 const entryFirebaseCollectionRef = collection(db, "entries");
 
 export { db, entryFirebaseCollectionRef };
+export const firebaseApp = app;
