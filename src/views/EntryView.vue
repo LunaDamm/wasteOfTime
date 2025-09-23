@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div v-if="isLoggedIn" class="about">
     <h1>Firebase fuckery</h1>
     <h3>entries</h3>
     <input type="text" v-model="newEntryTitle" placeholder="Entry title" @keyup.enter="addEntry" />
@@ -25,15 +25,21 @@
       <li>You could've change your life for the better at least 1 time, but you didn't. Sucks to suck!</li>
     </ul>
   </div>
+  <div v-else>
+    <p>Log in, pwetty pwease</p>
+  </div>
 </template>
 
 <script setup>
 import { useEntries } from '../composables/useEntries.js'
 import { useTotalTime } from '../composables/useTotalTime.js'
+import { useAuth } from '../composables/useAuth.js'
 
 const { entries, newEntryTitle, newEntryStartTime, newEntryEndTime, addEntry, deleteEntry } = useEntries()
 
 const { totalTime, totalHours } = useTotalTime(entries)
+
+const { isLoggedIn } = useAuth()
 </script>
 
 

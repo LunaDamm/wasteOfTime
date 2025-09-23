@@ -1,9 +1,11 @@
 import { onMounted, ref } from "vue";
-import { onSnapshot, addDoc, deleteDoc, doc } from "firebase/firestore";
+import { onSnapshot, addDoc, deleteDoc, doc, query, where } from "firebase/firestore";
 import { db, entryFirebaseCollectionRef } from "./firebase.js";
+import { useAuth } from "./useAuth.js";
 
 export function useEntries() {
   const entries = ref([]);
+  const { currentUser } = useAuth();
 
   const newEntryTitle = ref("");
   const newEntryStartTime = ref("");
@@ -12,14 +14,24 @@ export function useEntries() {
   console.log("Entry added:" + entries.value);
 
   onMounted(() => {
-    // Fetches entreis from firebase on mount
-    const entryCollection = entryFirebaseCollectionRef;
-    onSnapshot(entryCollection, (snapshot) => {
-      entries.value = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    });
+    // Fetches entries from firebase on mount for current user
+    if (currentUser.value) {
+      const userEntriesQuery = query(
+        entryFirebaseCollectionRef,
+        where("userId", "==", currentUser.value.uid)
+      );
+      onSnapshot(userEntriesQuery, (snapshot) => {
+        entries.value = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      });
+    }
   });
 
   const addEntry = async () => {
+    if (!currentUser.value) {
+      console.error("User must be logged in to add entries");
+      return;
+    }
+
     if (newEntryTitle.value.trim() == "" || newEntryStartTime.value.trim() == "" || newEntryEndTime.value.trim() == "") return;
 
     const [startHours, startMinutes] = newEntryStartTime.value.split(':').map(Number);
@@ -45,6 +57,7 @@ export function useEntries() {
       entryStartTime: newEntryStartTime.value,
       entryEndTime: newEntryEndTime.value,
       durationMinutes: durationMinutes,
+      userId: currentUser.value.uid,
     });
     newEntryTitle.value = "";
     newEntryStartTime.value = "";

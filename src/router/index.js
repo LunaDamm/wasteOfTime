@@ -22,11 +22,17 @@ const router = createRouter({
       path: '/entry',
       name: 'entry',
       component: () => import('../views/EntryView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue'),
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/RegisterView.vue'),
     },
     {
       path: '/admin',
