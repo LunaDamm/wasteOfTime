@@ -18,7 +18,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useAuth } from '../modules/useAuth'
+import { useAuth } from '../composables/useAuth'
 
 const { login, authError, loading, isLoggedIn, currentUser } = useAuth()
 
