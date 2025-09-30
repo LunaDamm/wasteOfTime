@@ -10,40 +10,58 @@
       <button @click="addEntry">Add Entry</button>
     </div>
 
-    <!-- TV Show search and add -->
+    <!-- Media search and add -->
     <div class="tv-show-form">
-      <h2>Add TV Show Time</h2>
+      <h2>Add Media Time</h2>
+
+      <!-- Search type toggle -->
+      <div class="search-type-toggle">
+        <label>
+          <input type="radio" v-model="searchType" value="tv" />
+          TV Shows
+        </label>
+        <label>
+          <input type="radio" v-model="searchType" value="movie" />
+          Movies
+        </label>
+      </div>
+
       <div>
-        <input class="border p-2 mb-4 w-64" type="text" v-model="searchQuery" placeholder="Search for a TV show..." @keyup.enter="searchShows"
+        <input
+          type="text"
+          v-model="currentSearchQuery"
+          :placeholder="`Search for ${searchType === 'tv' ? 'TV shows' : 'movies'}...`"
+          @keyup.enter="performSearch"
         />
-        <button @click="searchShows" :disabled="loading">
-          {{ loading ? 'Searching...' : 'Search' }}
+        <button @click="performSearch" :disabled="currentLoading">
+          {{ currentLoading ? 'Searching...' : 'Search' }}
         </button>
       </div>
 
-      <div v-if="error" class="error">{{ error }}</div>
+      <div v-if="currentError" class="error">{{ currentError }}</div>
 
       <!-- Search Results -->
-      <div v-if="searchResults.length > 0 && !selectedShow" class="search-results">
+      <div v-if="currentSearchResults.length > 0 && !currentSelected" class="search-results">
         <h3>Search Results:</h3>
         <div class="show-grid">
           <div
-            v-for="show in searchResults"
-            :key="show.id"
+            v-for="item in currentSearchResults"
+            :key="item.id"
             class="show-card"
-            @click="selectShow(show)"
+            @click="selectItem(item)"
           >
-            <img v-if="show.image" :src="show.image" :alt="show.name" />
+            <img v-if="item.image" :src="item.image" :alt="item.title || item.name" />
             <div v-else class="no-image">No Image</div>
-            <h4>{{ show.name }}</h4>
+            <h4>{{ item.title || item.name }}</h4>
+            <p v-if="item.year" class="year">{{ item.year }}</p>
           </div>
         </div>
       </div>
 
-      <!-- Selected Show Details -->
-      <div v-if="selectedShow" class="show-details">
+      <!-- Selected TV Show Details -->
+      <div v-if="searchType === 'tv' && selectedShow" class="show-details">
         <div class="show-header">
-          <button @click="clearSelection" class="back-button">← Back to Results</button>
+          <button @click="clearCurrentSelection" class="back-button">← Back to Results</button>
           <div v-if="loadingShow" class="loading">Loading show details...</div>
         </div>
 
@@ -89,13 +107,46 @@
           </button>
         </div>
       </div>
+
+      <!-- Selected Movie Details -->
+      <div v-if="searchType === 'movie' && selectedMovie" class="show-details">
+        <div class="show-header">
+          <button @click="clearCurrentSelection" class="back-button">← Back to Results</button>
+          <div v-if="loadingMovie" class="loading">Loading movie details...</div>
+        </div>
+
+        <div v-if="!loadingMovie" class="show-info">
+          <img v-if="selectedMovie.image" :src="selectedMovie.image" :alt="selectedMovie.title" style="width: 100px;" />
+          <div>
+            <h3>{{ selectedMovie.title }} ({{ selectedMovie.year }})</h3>
+            <p><strong>Runtime:</strong> {{ selectedMovie.runtime }} minutes</p>
+            <p><strong>Genre:</strong> {{ selectedMovie.genre }}</p>
+            <p><strong>Director:</strong> {{ selectedMovie.director }}</p>
+            <p v-if="selectedMovie.imdbRating"><strong>IMDB Rating:</strong> {{ selectedMovie.imdbRating }}/10</p>
+            <div>{{ selectedMovie.plot }}</div>
+          </div>
+        </div>
+
+        <div v-if="!loadingMovie" class="movie-selection">
+          <div class="watch-count">
+            <label>
+              Times watched:
+              <input type="number" v-model="movieWatchCount" min="1" max="100" />
+            </label>
+          </div>
+
+          <button @click="addMovieEntry" class="add-show-button">
+            Add Movie to Entries
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Existing entries list -->
     <ul>
-      <li v-for="entry in entries" :key="entry.id">
-        {{ entry.entryName }} // {{ entry.entryStartTime }} // {{ entry.entryEndTime }} // Duration: {{ entry.durationMinutes }} // {{ entry.id }}
-        <button @click="deleteEntry(entry.id)">Remove</button>
+      <li class="border" v-for="entry in entries" :key="entry.id">
+        {{ entry.entryName }}
+        <button class="border text-red-400" @click="deleteEntry(entry.id)">Remove</button>
       </li>
     </ul>
 
@@ -118,21 +169,25 @@
 </template>
 
 <script setup>
+import { ref, computed } from 'vue'
 import { useEntries } from '../composables/useEntries.js'
 import { useTotalTime } from '../composables/useTotalTime.js'
 import { useAuth } from '../composables/useAuth.js'
 import { useTVMaze } from '../composables/useTVMaze.js'
+import { useOMDB } from '../composables/useOMDB.js'
 
 const { entries, newEntryTitle, newEntryStartTime, newEntryEndTime, addEntry, deleteEntry } = useEntries()
 const { totalTime, totalHours } = useTotalTime(entries)
 const { isLoggedIn } = useAuth()
+
+// TV Shows composable
 const {
-  searchQuery,
-  searchResults,
+  searchQuery: tvSearchQuery,
+  searchResults: tvSearchResults,
   selectedShow,
-  loading,
+  loading: tvLoading,
   loadingShow,
-  error,
+  error: tvError,
   selectedSeasons,
   watchCount,
   searchShows,
@@ -140,8 +195,79 @@ const {
   toggleSeason,
   toggleAllSeasons,
   addShowEntry,
-  clearSelection
+  clearSelection: clearTVSelection
 } = useTVMaze()
+
+// Movies composable
+const {
+  searchQuery: movieSearchQuery,
+  searchResults: movieSearchResults,
+  selectedMovie,
+  loading: movieLoading,
+  loadingMovie,
+  error: movieError,
+  watchCount: movieWatchCount,
+  searchMovies,
+  selectMovie,
+  addMovieEntry,
+  clearSelection: clearMovieSelection
+} = useOMDB()
+
+// Search type toggle
+const searchType = ref('tv')
+
+// Computed properties to unify the interfaces
+const currentSearchQuery = computed({
+  get: () => searchType.value === 'tv' ? tvSearchQuery.value : movieSearchQuery.value,
+  set: (value) => {
+    if (searchType.value === 'tv') {
+      tvSearchQuery.value = value
+    } else {
+      movieSearchQuery.value = value
+    }
+  }
+})
+
+const currentSearchResults = computed(() =>
+  searchType.value === 'tv' ? tvSearchResults.value : movieSearchResults.value
+)
+
+const currentSelected = computed(() =>
+  searchType.value === 'tv' ? selectedShow.value : selectedMovie.value
+)
+
+const currentLoading = computed(() =>
+  searchType.value === 'tv' ? tvLoading.value : movieLoading.value
+)
+
+const currentError = computed(() =>
+  searchType.value === 'tv' ? tvError.value : movieError.value
+)
+
+// Unified methods
+const performSearch = () => {
+  if (searchType.value === 'tv') {
+    searchShows()
+  } else {
+    searchMovies()
+  }
+}
+
+const selectItem = (item) => {
+  if (searchType.value === 'tv') {
+    selectShow(item)
+  } else {
+    selectMovie(item)
+  }
+}
+
+const clearCurrentSelection = () => {
+  if (searchType.value === 'tv') {
+    clearTVSelection()
+  } else {
+    clearMovieSelection()
+  }
+}
 </script>
 
 <style>
@@ -149,6 +275,19 @@ const {
   margin-bottom: 2rem;
   padding: 1rem;
   border: 1px solid #ccc;
+}
+
+.search-type-toggle {
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.search-type-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
 }
 
 .search-results {
@@ -199,6 +338,12 @@ const {
   font-size: 0.9rem;
 }
 
+.year {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.8rem;
+  color: #666;
+}
+
 .show-details {
   margin-top: 1rem;
 }
@@ -234,6 +379,10 @@ const {
 
 .watch-count {
   margin: 1rem 0;
+}
+
+.movie-selection {
+  margin-top: 1rem;
 }
 
 .add-show-button {

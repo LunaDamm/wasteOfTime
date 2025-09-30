@@ -144,7 +144,8 @@ export function useTVMaze() {
       type: 'tv_show',
       showData: {
         name: selectedShow.value.name,
-        watchCount: watchCount.value
+        watchCount: watchCount.value,
+        cover: selectedShow.value.image,
       }
     })
 
