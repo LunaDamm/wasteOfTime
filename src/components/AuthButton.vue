@@ -1,6 +1,6 @@
 <template>
-  <button v-if="isLoggedIn" @click="handleLogout" class="auth-button">Logout</button>
-  <router-link v-else to="/login" class="auth-button">Login</router-link>
+  <button v-if="isLoggedIn" @click="handleLogout" class="!px-4 !py-2 text-base bg-indigo-300 !text-white border-none rounded cursor-pointer inline-block transition duration-200">Logout</button>
+  <router-link v-else to="/login" class="!px-4 !py-2 text-base bg-indigo-300 !text-white border-none rounded cursor-pointer no-underline inline-block transition duration-200">Login</router-link>
 </template>
 
 <script setup>
@@ -16,17 +16,4 @@ const handleLogout = () => {
 </script>
 
 <style scoped>
-
-.auth-button {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-}
-
 </style>

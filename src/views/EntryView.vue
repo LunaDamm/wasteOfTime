@@ -1,9 +1,9 @@
 <template>
   <div v-if="isLoggedIn" class="entry-view">
     <h1>entries</h1>
-    <input type="text" class="border" v-model="newEntryTitle" placeholder="Entry title" @keyup.enter="addEntry" />
-    <input type="time" class="border" v-model="newEntryStartTime" placeholder="Entry time" @keyup.enter="addEntry" />
-    <input type="time" class="border" v-model="newEntryEndTime" placeholder="Entry time" @keyup.enter="addEntry" />
+    <input type="text" class="" v-model="newEntryTitle" placeholder="Entry title" @keyup.enter="addEntry" />
+    <input type="time" class="" v-model="newEntryStartTime" placeholder="Entry time" @keyup.enter="addEntry" />
+    <input type="time" class="" v-model="newEntryEndTime" placeholder="Entry time" @keyup.enter="addEntry" />
     <button @click="addEntry">Add Entry</button>
     <ul>
       <li v-for="entry in entries" :key="entry.id">

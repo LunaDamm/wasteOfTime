@@ -1,10 +1,10 @@
 <template>
-  <div class="login-view">
-    <h1>Hello 👋🏻</h1>
+  <div class="login-view pt-10 flex flex-col gap-4">
+    <h1 class="text-3xl font-bold text-center">Hello 👋🏻</h1>
     <form class="flex flex-col" @submit.prevent="loginUser">
-      <input type="email" v-model="email" placeholder="Email" required />
-      <input type="password" v-model="password" placeholder="Password" required />
-      <button type="submit" :disabled="loading">Login</button>
+      <input class="border p-2 mb-4" type="email" v-model="email" placeholder="Email" required />
+      <input class="border p-2 mb-4" type="password" v-model="password" placeholder="Password" required />
+      <button class="bg-indigo-300 text-white p-2 rounded" type="submit" :disabled="loading">Login</button>
       <router-link to="/register">Register</router-link>
     </form>
     <div class="error" v-if="authError">
@@ -13,7 +13,6 @@
     <div v-if="isLoggedIn">
       Logged in as: {{ currentUser?.email }}
     </div>
-
   </div>
 </template>
 
@@ -33,6 +32,4 @@ const loginUser = async () => {
 </script>
 
 <style scoped>
-
-
 </style>
