@@ -1,10 +1,9 @@
 <template>
-  <div v-if="isLoggedIn" class="about">
-    <h1>Firebase fuckery</h1>
-    <h3>entries</h3>
-    <input type="text" v-model="newEntryTitle" placeholder="Entry title" @keyup.enter="addEntry" />
-    <input type="time" v-model="newEntryStartTime" placeholder="Entry time" @keyup.enter="addEntry" />
-    <input type="time" v-model="newEntryEndTime" placeholder="Entry time" @keyup.enter="addEntry" />
+  <div v-if="isLoggedIn" class="entry-view">
+    <h1>entries</h1>
+    <input type="text" class="border" v-model="newEntryTitle" placeholder="Entry title" @keyup.enter="addEntry" />
+    <input type="time" class="border" v-model="newEntryStartTime" placeholder="Entry time" @keyup.enter="addEntry" />
+    <input type="time" class="border" v-model="newEntryEndTime" placeholder="Entry time" @keyup.enter="addEntry" />
     <button @click="addEntry">Add Entry</button>
     <ul>
       <li v-for="entry in entries" :key="entry.id">
@@ -44,9 +43,4 @@ const { isLoggedIn } = useAuth()
 
 
 <style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-  }
-}
 </style>
