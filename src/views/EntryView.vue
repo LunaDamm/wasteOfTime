@@ -1,39 +1,39 @@
 <template>
-  <div v-if="isLoggedIn" class="entry-view">
-    <h1>entries</h1>
-
-    <!-- Regular entry form -->
-    <div class="entry-form">
-      <input type="text" v-model="newEntryTitle" placeholder="Entry title" @keyup.enter="addEntry" />
-      <input type="time" v-model="newEntryStartTime" placeholder="Entry time" @keyup.enter="addEntry" />
-      <input type="time" v-model="newEntryEndTime" placeholder="Entry time" @keyup.enter="addEntry" />
-      <button @click="addEntry">Add Entry</button>
+  <div class="lg:w-4xl" v-if="isLoggedIn">
+    <h1>Sooo... how much time have you wasted?</h1>
+    <div class="border p-4 !mb-4 border-indigo-300 rounded">
+      <h2 class="text-lg font-semibold text-indigo-300">Add Manual Entry</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
+        <input class="border border-indigo-300 rounded p-2 !mb-2 " type="text" v-model="newEntryTitle" placeholder="Entry title"
+          @keyup.enter="addEntry" />
+        <input class="border border-indigo-300 rounded p-2 !mb-2" type="time" v-model="newEntryStartTime" placeholder="Entry time"
+          @keyup.enter="addEntry" />
+        <input class="border border-indigo-300 rounded p-2 !mb-2" type="time" v-model="newEntryEndTime" placeholder="Entry time"
+          @keyup.enter="addEntry" />
+      </div>
+      <button class="border px-6 py-2 bg-indigo-300 hover:bg-indigo-500 text-white rounded text-center cursor-pointer" @click="addEntry">Add Entry</button>
     </div>
 
     <!-- Media search and add -->
-    <div class="tv-show-form">
-      <h2>Add Media Time</h2>
+    <div class="border p-4 !mb-4 border-indigo-300 rounded">
+      <h2 class="text-lg font-semibold text-indigo-300">Add Media Time</h2>
 
       <!-- Search type toggle -->
-      <div class="search-type-toggle">
-        <label>
+      <div class="!mb-4">
+        <label class="!mr-4 !font-semibold cursor-pointer">
           <input type="radio" v-model="searchType" value="tv" />
           TV Shows
         </label>
-        <label>
+        <label class="!font-semibold cursor-pointer">
           <input type="radio" v-model="searchType" value="movie" />
           Movies
         </label>
       </div>
 
-      <div>
-        <input
-          type="text"
-          v-model="currentSearchQuery"
-          :placeholder="`Search for ${searchType === 'tv' ? 'TV shows' : 'movies'}...`"
-          @keyup.enter="performSearch"
-        />
-        <button @click="performSearch" :disabled="currentLoading">
+      <div class="!mb-4 grid grid-cols-1 md:grid-cols-4 gap-2">
+        <input class="border border-indigo-300 rounded p-2 col-span-3" type="text" v-model="currentSearchQuery"
+          :placeholder="`Search for ${searchType === 'tv' ? 'TV shows' : 'movies'}...`" @keyup.enter="performSearch" />
+        <button class="border px-6 py-2 bg-indigo-300 text-white rounded cursor-pointer hover:bg-indigo-500" @click="performSearch" :disabled="currentLoading">
           {{ currentLoading ? 'Searching...' : 'Search' }}
         </button>
       </div>
@@ -41,24 +41,19 @@
       <div v-if="currentError" class="error">{{ currentError }}</div>
 
       <!-- Search Results -->
-      <div v-if="currentSearchResults.length > 0 && !currentSelected" class="search-results">
+      <div v-if="currentSearchResults.length > 0 && !currentSelected" class="">
         <h3>Search Results:</h3>
-        <div class="show-grid">
-          <div
-            v-for="item in currentSearchResults"
-            :key="item.id"
-            class="show-card"
-            @click="selectItem(item)"
-          >
-            <img v-if="item.image" :src="item.image" :alt="item.title || item.name" />
-            <div v-else class="no-image">No Image</div>
-            <h4>{{ item.title || item.name }}</h4>
-            <p v-if="item.year" class="year">{{ item.year }}</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-128 overflow-y-auto mb-4 items-center cursor-pointer">
+          <div v-for="item in currentSearchResults" :key="item.id" class="grid" @click="selectItem(item)">
+            <img class="w-full h-auto aspect-2/3 rounded" v-if="item.image" :src="item.image" :alt="item.title || item.name" />
+            <div class="text-center w-full aspect-2/3 bg-gray-200 rounded flex items-center justify-center" v-else >No Image</div>
+            <h4 class="text-center">{{ item.title || item.name }}</h4>
+            <p v-if="item.year" class="text-center">{{ item.year }}</p>
           </div>
         </div>
       </div>
 
-      <!-- Selected TV Show Details -->
+      <!-- Selected Show Details -->
       <div v-if="searchType === 'tv' && selectedShow" class="show-details">
         <div class="show-header">
           <button @click="clearCurrentSelection" class="back-button">← Back to Results</button>
@@ -81,11 +76,8 @@
 
           <div v-for="season in selectedShow.seasons" :key="season.seasonNumber" class="season-item">
             <label>
-              <input
-                type="checkbox"
-                :checked="selectedSeasons.includes(season.seasonNumber)"
-                @change="toggleSeason(season.seasonNumber)"
-              />
+              <input type="checkbox" :checked="selectedSeasons.includes(season.seasonNumber)"
+                @change="toggleSeason(season.seasonNumber)" />
               Season {{ season.seasonNumber }}
               ({{ season.episodes.length }} episodes, {{ season.totalRuntime }} minutes)
             </label>
@@ -98,11 +90,7 @@
             </label>
           </div>
 
-          <button
-            @click="addShowEntry"
-            :disabled="selectedSeasons.length === 0"
-            class="add-show-button"
-          >
+          <button @click="addShowEntry" :disabled="selectedSeasons.length === 0" class="add-show-button">
             Add Show to Entries
           </button>
         </div>
@@ -157,7 +145,7 @@
       <li>Made {{ (totalHours / 0.1).toFixed(2) }} sandwiches and fed them to homeless people</li>
       <li>Traveled to New Zealand by plane and back about {{ (totalHours / 40).toFixed(2) }} times</li>
       <li>Learned about {{ (totalHours / 600).toFixed(2) }} languages</li>
-      <li>Worked for {{ totalHours }} hours and made at least {{ (totalHours * 150).toFixed(2) }} DKK</li>
+      <li>Worked for {{ totalHours.toFixed(2) }} hours and made at least {{ (totalHours * 150).toFixed(2) }} DKK</li>
       <li>Called your mum about {{ (totalHours / 0.5).toFixed(2) }} times and told her you love her for once!</li>
       <li>Read about {{ ((totalHours / 500000) * 100).toFixed(2) }}% of all English Wikipedia articles</li>
       <li>You could've change your life for the better at least 1 time, but you didn't. Sucks to suck!</li>
@@ -270,142 +258,4 @@ const clearCurrentSelection = () => {
 }
 </script>
 
-<style>
-.entry-form, .tv-show-form {
-  margin-bottom: 2rem;
-  padding: 1rem;
-  border: 1px solid #ccc;
-}
-
-.search-type-toggle {
-  margin-bottom: 1rem;
-  display: flex;
-  gap: 1rem;
-}
-
-.search-type-toggle label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-}
-
-.search-results {
-  margin-top: 1rem;
-}
-
-.show-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.show-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 1rem;
-  cursor: pointer;
-  transition: transform 0.2s;
-  text-align: center;
-}
-
-.show-card:hover {
-  transform: scale(1.05);
-  border-color: #007bff;
-}
-
-.show-card img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 4px;
-}
-
-.no-image {
-  width: 100%;
-  height: 200px;
-  background-color: #f0f0f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  color: #666;
-}
-
-.show-card h4 {
-  margin: 0.5rem 0 0 0;
-  font-size: 0.9rem;
-}
-
-.year {
-  margin: 0.25rem 0 0 0;
-  font-size: 0.8rem;
-  color: #666;
-}
-
-.show-details {
-  margin-top: 1rem;
-}
-
-.show-header {
-  margin-bottom: 1rem;
-}
-
-.back-button {
-  background: none;
-  border: 1px solid #007bff;
-  color: #007bff;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-}
-
-.back-button:hover {
-  background-color: #007bff;
-  color: white;
-}
-
-.show-info {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.season-item {
-  margin: 0.5rem 0;
-}
-
-.watch-count {
-  margin: 1rem 0;
-}
-
-.movie-selection {
-  margin-top: 1rem;
-}
-
-.add-show-button {
-  background-color: #007bff;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.add-show-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.error {
-  color: red;
-  margin: 0.5rem 0;
-}
-
-.loading {
-  color: #666;
-  font-style: italic;
-}
-</style>
+<style></style>

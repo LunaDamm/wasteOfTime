@@ -11,16 +11,16 @@
 a,
 .green {
   text-decoration: none;
-  color: hsl(335, 100%, 37%);
+  /* color: hsl(335, 100%, 37%); */
   transition: 0.4s;
   padding: 3px;
 }
 
-@media (hover: hover) {
+/* @media (hover: hover) {
   a:hover {
     background-color: hsla(335, 100%, 37%, 0.2);
   }
-}
+} */
 
 @media (min-width: 1024px) {
   body {
@@ -33,4 +33,54 @@ a,
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
   } */
+}
+
+
+.animated-border {
+  position: relative;
+  padding: 12px 24px;
+  border-radius: 8px;
+  background: transparent;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.animated-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 8px;
+  padding: 2px;
+  background: linear-gradient(45deg,
+    #ff006e,
+    #8338ec,
+    #3a86ff,
+    #06ffa5,
+    #ffbe0b,
+    #ff006e
+  );
+  background-size: 400% 400%;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  opacity: 0;
+  animation: borderGradient 3s ease infinite;
+  transition: opacity 0.4s ease;
+}
+
+.animated-border:hover::before {
+  opacity: 1;
+}
+
+@keyframes borderGradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
