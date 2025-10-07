@@ -8,19 +8,21 @@ export function useRegister() {
 
   const email = ref('')
   const password = ref('')
+  const displayName = ref('')
 
   const registerUser = async () => {
-    await register(email.value, password.value)
+    await register(email.value, password.value, displayName.value)
 
     // Redirect on successful registration
     if (!authError.value) {
-      router.push('/login')
+      router.push('/entry')
     }
   }
 
   return {
     email,
     password,
+    displayName,
     loading,
     authError,
     registerUser

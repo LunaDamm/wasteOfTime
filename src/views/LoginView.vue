@@ -11,7 +11,7 @@
       {{ authError }}
     </div>
     <div v-if="isLoggedIn">
-      Logged in as: {{ currentUser?.email }}
+      Logged in as: {{ currentUser?.displayName }}, {{ currentUser?.email }}
     </div>
   </div>
 </template>

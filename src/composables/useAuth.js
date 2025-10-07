@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue';
 import { firebaseApp } from './firebase.js';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from 'firebase/auth';
 
 const auth = getAuth(firebaseApp);
 
@@ -29,12 +29,16 @@ const login = async (email, password) => {
 }
 
 // Registration function - with help from Copilot :)
-const register = async (email, password) => {
+const register = async (email, password, displayName) => {
   console.log("Attempting registration with email:", email);
   loading.value = true;
   authError.value = null;
   try {
-    await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    if (displayName) {
+      await updateProfile(user, { displayName });
+    }
   }
   catch (error) {
     authError.value = error.message

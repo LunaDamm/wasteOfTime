@@ -144,12 +144,19 @@
         <li class="!mb-2 p-2 border border-gray-300 rounded">Worked for {{ totalHours.toFixed(2) }} hours and made at least {{ (totalHours * 150).toFixed(2) }} DKK</li>
         <li class="!mb-2 p-2 border border-gray-300 rounded">Called your mum about {{ (totalHours / 0.5).toFixed(2) }} times and told her you love her for once!</li>
         <li class="!mb-2 p-2 border border-gray-300 rounded">Read about {{ ((totalHours / 500000) * 100).toFixed(2) }}% of all English Wikipedia articles</li>
+        <li class="!mb-2 p-2 border border-gray-300 rounded">Slept for {{ (totalHours / 8).toFixed(2) }} days straight. Ah, the life of a cat...</li>
+        <li class="!mb-2 p-2 border border-gray-300 rounded">Listened to about {{ (totalHours / 3).toFixed(2) }} albums on repeat</li>
+        <li class="!mb-2 p-2 border border-gray-300 rounded">Binged all of Breaking Bad about {{ (totalHours / 46).toFixed(2) }} times (why wouldn't you?)</li>
         <li class="!mb-2 p-2 border border-gray-300 rounded bg-red-100 text-red-700 font-semibold">You could've change your life for the better at least 1 time, but you didn't. Sucks to suck!</li>
       </ul>
+      <div class="text-center mt-4">
+        <p class="text-[18px]">Share your time spent on activities on the website for others to see!</p>
+        <button class="border px-6 py-2 bg-indigo-300 hover:bg-indigo-500 text-white rounded text-center cursor-pointer !mb-4">Share my time!</button>
+      </div>
     </div>
   </div>
   <div v-else>
-    <p>Log in, pwetty pwease</p>
+    <p>Log in, pwetty pwease 🥺</p>
   </div>
 </template>
 
