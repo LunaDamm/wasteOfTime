@@ -151,7 +151,10 @@
       </ul>
       <div class="text-center mt-4">
         <p class="text-[18px]">Share your time spent on activities on the website for others to see!</p>
-        <button class="border px-6 py-2 bg-indigo-300 hover:bg-indigo-500 text-white rounded text-center cursor-pointer !mb-4">Share my time!</button>
+        <button class="border px-6 py-2 bg-indigo-300 hover:bg-indigo-500 text-white rounded text-center cursor-pointer !mb-4" @click="handleShare">
+          {{ shareButtonLabel }}
+        </button>
+        <div v-if="shareError" class="text-red-500 mt-2">{{ shareError }}</div>
       </div>
     </div>
   </div>
@@ -161,16 +164,30 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useEntries } from '../composables/useEntries.js'
 import { useTotalTime } from '../composables/useTotalTime.js'
 import { useAuth } from '../composables/useAuth.js'
 import { useTVMaze } from '../composables/useTVMaze.js'
 import { useOMDB } from '../composables/useOMDB.js'
+import { useShareTime } from '../composables/useShareTime.js'
 
 const { entries, newEntryTitle, newEntryStartTime, newEntryEndTime, addEntry, deleteEntry } = useEntries()
 const { totalTime, totalHours } = useTotalTime(entries)
-const { isLoggedIn } = useAuth()
+const { isLoggedIn, currentUser } = useAuth()
+
+// Share time composable
+const { shareTime, loadSharedTime, sharedExists, error: shareError } = useShareTime()
+
+// load existing shared time when currentUser available
+onMounted(() => {
+  if (currentUser?.value?.uid) {
+    loadSharedTime(currentUser.value.uid)
+  }
+})
+watch(currentUser, (u) => {
+  if (u?.uid) loadSharedTime(u.uid)
+})
 
 // TV Shows composable
 const {
@@ -282,6 +299,17 @@ const addCurrentEntry = () => {
   } else {
     addMovieEntry()
   }
+}
+
+// Share button handling
+const shareButtonLabel = computed(() => sharedExists.value ? 'Update my time!' : 'Share my time!')
+
+const handleShare = async () => {
+  if (!currentUser?.value?.uid) return
+  const displayName = currentUser.value.displayName || currentUser.value.email || 'Anonymous'
+  await shareTime(currentUser.value.uid, displayName, totalTime.value)
+  // reload shared status after share
+  await loadSharedTime(currentUser.value.uid)
 }
 </script>
 
