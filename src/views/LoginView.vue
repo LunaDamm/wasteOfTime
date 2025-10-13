@@ -4,7 +4,7 @@
     <form class="flex flex-col" @submit.prevent="loginUser">
       <input class="border border-indigo-300 p-2 !mb-4 rounded" type="email" v-model="email" placeholder="Email" required />
       <input class="border border-indigo-300 p-2 !mb-4 rounded" type="password" v-model="password" placeholder="Password" required />
-      <button class="bg-indigo-300 text-white p-2 rounded" type="submit" :disabled="loading">Login</button>
+      <button class="bg-indigo-300 text-white p-2 rounded cursor-pointer hover:bg-indigo-500" type="submit" :disabled="loading">Login</button>
       <router-link to="/register" class="!text-indigo-300 !text-center">Register</router-link>
     </form>
     <div class="error" v-if="authError">

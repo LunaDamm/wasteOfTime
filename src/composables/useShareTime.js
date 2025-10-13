@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { db } from "./firebase"; // Adjust the path to your Firebase configuration
+import { db } from "./firebase";
 import {
   collection,
   addDoc,
@@ -40,7 +40,7 @@ export function useShareTime() {
     }
   };
 
-  const shareTime = async (userId, displayName, finalTime) => {
+  const shareTime = async (userId, displayName, finalTime, rawMinutes) => {
     error.value = null;
 
     try {
@@ -52,6 +52,7 @@ export function useShareTime() {
           userId,
           displayName,
           finalTime,
+          rawMinutes: rawMinutes ?? 0,
           timestamp: new Date(),
         });
       } else {
@@ -59,6 +60,7 @@ export function useShareTime() {
           userId,
           displayName,
           finalTime,
+          rawMinutes: rawMinutes ?? 0,
           timestamp: new Date(),
         });
         sharedDocId.value = newDoc.id;

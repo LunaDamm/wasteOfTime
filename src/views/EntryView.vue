@@ -1,19 +1,6 @@
 <template>
   <div class="lg:w-4xl" v-if="isLoggedIn">
     <h1>Sooo... how much time have you wasted?</h1>
-    <div class="border p-4 !mb-4 border-indigo-300 rounded">
-      <h2 class="text-lg font-semibold text-indigo-300">Add Manual Entry</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
-        <input class="border border-indigo-300 rounded p-2 !mb-2 " type="text" v-model="newEntryTitle" placeholder="Entry title"
-          @keyup.enter="addEntry" />
-        <input class="border border-indigo-300 rounded p-2 !mb-2" type="time" v-model="newEntryStartTime" placeholder="Entry time"
-          @keyup.enter="addEntry" />
-        <input class="border border-indigo-300 rounded p-2 !mb-2" type="time" v-model="newEntryEndTime" placeholder="Entry time"
-          @keyup.enter="addEntry" />
-      </div>
-      <button class="border px-6 py-2 bg-indigo-300 hover:bg-indigo-500 text-white rounded text-center cursor-pointer" @click="addEntry">Add Entry</button>
-    </div>
-
     <!-- Media search and add -->
     <div class="border p-4 !mb-4 border-indigo-300 rounded">
       <h2 class="text-lg font-semibold text-indigo-300">Add Media Time</h2>
@@ -122,6 +109,19 @@
       </div>
     </div>
 
+    <div class="border p-4 !mb-4 border-indigo-300 rounded">
+      <h2 class="text-lg font-semibold text-indigo-300">Add Manual Entry</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
+        <input class="border border-indigo-300 rounded p-2 !mb-2 " type="text" v-model="newEntryTitle" placeholder="Entry title"
+          @keyup.enter="addEntry" />
+        <input class="border border-indigo-300 rounded p-2 !mb-2" type="time" v-model="newEntryStartTime" placeholder="Entry time"
+          @keyup.enter="addEntry" />
+        <input class="border border-indigo-300 rounded p-2 !mb-2" type="time" v-model="newEntryEndTime" placeholder="Entry time"
+          @keyup.enter="addEntry" />
+      </div>
+      <button class="border px-6 py-2 bg-indigo-300 hover:bg-indigo-500 text-white rounded text-center cursor-pointer" @click="addEntry">Add Entry</button>
+    </div>
+
     <!-- Existing entries list -->
     <div class="border p-4 !mb-4 border-indigo-300 rounded">
       <h3 class="text-lg font-semibold text-indigo-300 !mb-4">Your Entries</h3>
@@ -173,7 +173,8 @@ import { useOMDB } from '../composables/useOMDB.js'
 import { useShareTime } from '../composables/useShareTime.js'
 
 const { entries, newEntryTitle, newEntryStartTime, newEntryEndTime, addEntry, deleteEntry } = useEntries()
-const { totalTime, totalHours } = useTotalTime(entries)
+// include raw total minutes
+const { totalTime, totalHours, totalDurationMinutes } = useTotalTime(entries)
 const { isLoggedIn, currentUser } = useAuth()
 
 // Share time composable
@@ -307,7 +308,7 @@ const shareButtonLabel = computed(() => sharedExists.value ? 'Update my time!' :
 const handleShare = async () => {
   if (!currentUser?.value?.uid) return
   const displayName = currentUser.value.displayName || currentUser.value.email || 'Anonymous'
-  await shareTime(currentUser.value.uid, displayName, totalTime.value)
+  await shareTime(currentUser.value.uid, displayName, totalTime.value, totalDurationMinutes.value)
   // reload shared status after share
   await loadSharedTime(currentUser.value.uid)
 }
