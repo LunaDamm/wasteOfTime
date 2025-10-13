@@ -4,7 +4,8 @@
     <form class="flex flex-col" @submit.prevent="registerUser">
       <input class="border border-indigo-300 p-2 !mb-4 rounded" type="email" v-model="email" placeholder="Email" required />
       <input class="border border-indigo-300 p-2 !mb-4 rounded" type="password" v-model="password" placeholder="Password" required />
-      <input class="border border-indigo-300 p-2 !mb-4 rounded" type="text" v-model="displayName" placeholder="Display Name" required />
+      <input class="border border-indigo-300 p-2 rounded" type="text" v-model="displayName" placeholder="Display Name" required />
+      <p class="!mb-4">All three cannot be changed later!!</p>
       <button class="bg-indigo-300 text-white p-2 rounded cursor-pointer hover:bg-indigo-500" type="submit" :disabled="loading">Register</button>
       <router-link to="/login" class="!text-indigo-300 !text-center">Login</router-link>
     </form>

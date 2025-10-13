@@ -47,7 +47,7 @@
           <div v-if="currentLoadingDetails">Loading {{ searchType }} details...</div>
         </div>
 
-        <div v-if="!currentLoadingDetails" class="flex gap-4 !mb-4">
+        <div v-if="!currentLoadingDetails" class="md:flex gap-4 !mb-4">
           <img v-if="currentSelected.image" :src="currentSelected.image"
                :alt="currentSelected.title || currentSelected.name" class="w-48 h-full" />
           <div class="text-sm">
@@ -57,18 +57,18 @@
 
             <!-- Movie specific details -->
             <template v-if="searchType === 'movie'">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div class="grid grid-cols-2 md:grid-cols-2 gap-2">
               <p class="flex items-center gap-2 p-2 border border-gray-300 rounded">Runtime: {{ currentSelected.runtime }} minutes</p>
               <p class="flex items-center gap-2 p-2 border border-gray-300 rounded">Genre: {{ currentSelected.genre }}</p>
               <p class="flex items-center gap-2 p-2 border border-gray-300 rounded">Director: {{ currentSelected.director }}</p>
               <p class="flex items-center gap-2 p-2 border border-gray-300 rounded" v-if="currentSelected.imdbRating">IMDB Rating: {{ currentSelected.imdbRating }}/10</p>
-              <div class="col-span-2">{{ currentSelected.plot }}</div>
+              <div class="col-span-2 md:block hidden">{{ currentSelected.plot }}</div>
               </div>
             </template>
 
             <!-- TV Show specific details -->
             <template v-if="searchType === 'tv'">
-              <div v-html="currentSelected.summary"></div>
+              <div v-html="currentSelected.summary" class="md:block hidden"></div>
             </template>
           </div>
         </div>
@@ -137,7 +137,7 @@
     <div class="border p-4 !mb-4 border-indigo-300 rounded">
       <h3 class="text-lg font-semibold text-indigo-300 !mb-4">Your Entries</h3>
       <ul class="space-y-2 grid md:grid-cols-4 grid-cols-1 gap-4">
-        <li class="flex md:grid items-center p-2 border border-gray-300 rounded" v-for="entry in entries" :key="entry.id">
+        <li class="flex place-content-between md:grid items-center p-2 border border-gray-300 rounded" v-for="entry in entries" :key="entry.id">
           <img :src="entry.showData.cover" alt="Cover Image" class="w-full aspect-[9/12] object-cover rounded hidden md:block" />
           <span>{{ entry.entryName }}</span>
           <button class="px-4 py-1 border border-red-400 text-red-400 hover:bg-red-400 hover:text-white rounded cursor-pointer transition-colors" @click="deleteEntry(entry.id)">Remove</button>
@@ -333,12 +333,15 @@ const clearCurrentSelection = () => {
   }
 }
 
-const addCurrentEntry = () => {
+const addCurrentEntry = async () => {
   if (searchType.value === 'tv') {
-    addShowEntry()
+    await addShowEntry()
   } else {
-    addMovieEntry()
+    await addMovieEntry()
   }
+  // clear search box and selection after adding
+  currentSearchQuery.value = ''
+  clearCurrentSelection()
 }
 
 // Share button handling
