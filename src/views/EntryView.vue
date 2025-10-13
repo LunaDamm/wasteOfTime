@@ -186,7 +186,7 @@
           <h5 class="text-3xl">📺</h5>
           <p>Binged all of Breaking Bad about {{ (totalHours / 46).toFixed(2) }} times (why wouldn't you?)</p>
         </li>
-        <li class="col-span-3 p-2 border border-gray-300 rounded bg-red-100 text-red-700 !font-semibold text-center">You could've change your life for the better at least 1 time, but you didn't. Sucks to suck!</li>
+        <li class="md:col-span-3 p-2 border border-gray-300 rounded bg-red-100 text-red-700 !font-semibold text-center">You could've change your life for the better at least 1 time, but you didn't. Sucks to suck!</li>
       </ul>
       <div class="text-center !mt-4">
         <p class="text-[18px]">Share your time spent on activities on the website for others to see!</p>
