@@ -73,7 +73,7 @@
     </section>
 
     <footer class="mt-10 text-center text-sm text-gray-500">
-      Ⓝ 2025 WasteOfTime — made with ❤️ by Luna Andersen
+      Ⓝ 2025 WasteOfTime — made with wasted time by Luna
     </footer>
   </div>
 </template>

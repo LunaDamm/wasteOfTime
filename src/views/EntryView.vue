@@ -110,16 +110,27 @@
     </div>
 
     <div class="border p-4 !mb-4 border-indigo-300 rounded">
-      <h2 class="text-lg font-semibold text-indigo-300">Add Manual Entry</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
-        <input class="border border-indigo-300 rounded p-2 !mb-2 " type="text" v-model="newEntryTitle" placeholder="Entry title"
-          @keyup.enter="addEntry" />
-        <input class="border border-indigo-300 rounded p-2 !mb-2" type="time" v-model="newEntryStartTime" placeholder="Entry time"
-          @keyup.enter="addEntry" />
-        <input class="border border-indigo-300 rounded p-2 !mb-2" type="time" v-model="newEntryEndTime" placeholder="Entry time"
-          @keyup.enter="addEntry" />
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-indigo-300">Add Manual Entry</h2>
+        <button @click="showManual = !showManual"
+                class="border px-4 py-1 bg-indigo-300 hover:bg-indigo-500 text-white rounded text-center cursor-pointer">
+          {{ showManual ? 'Hide' : 'Show' }}
+        </button>
       </div>
-      <button class="border px-6 py-2 bg-indigo-300 hover:bg-indigo-500 text-white rounded text-center cursor-pointer" @click="addEntry">Add Entry</button>
+
+      <div>
+        <div v-show="showManual" class="mt-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
+            <input class="border border-indigo-300 rounded p-2 !mb-2" type="text" v-model="newEntryTitle" placeholder="Entry title"
+              @keyup.enter="addEntry" />
+            <input class="border border-indigo-300 rounded p-2 !mb-2" type="time" v-model="newEntryStartTime" placeholder="Entry time"
+              @keyup.enter="addEntry" />
+            <input class="border border-indigo-300 rounded p-2 !mb-2" type="time" v-model="newEntryEndTime" placeholder="Entry time"
+              @keyup.enter="addEntry" />
+          </div>
+          <button class="border px-6 py-2 bg-indigo-300 hover:bg-indigo-500 text-white rounded text-center cursor-pointer" @click="addEntry">Add Entry</button>
+        </div>
+      </div>
     </div>
 
     <!-- Existing entries list -->
@@ -312,6 +323,9 @@ const handleShare = async () => {
   // reload shared status after share
   await loadSharedTime(currentUser.value.uid)
 }
+
+// Manual entry dropdown control
+const showManual = ref(false)
 </script>
 
 <style></style>
