@@ -123,11 +123,12 @@ export function useOMDB() {
       durationMinutes: totalMinutes,
       userId: currentUser.value.uid,
       type: 'movie',
-      movieData: {
+      showData: {
         title: selectedMovie.value.title,
         year: selectedMovie.value.year,
         runtime: selectedMovie.value.runtime,
-        watchCount: watchCount.value
+        watchCount: watchCount.value,
+        cover: selectedMovie.value.image,
       }
     })
 
